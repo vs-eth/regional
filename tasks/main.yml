@@ -1,24 +1,31 @@
 ---
-
 - name: install locales
   apt: 
     name: locales
     state: present 
     update_cache: yes 
     cache_valid_time: 1800
+  when: ansible_distribution == "Debian"
 
 - name: generate locales
   locale_gen:
     name: "{{ item }}"
     state: present
-  with_items:
-    - en_US.UTF-8
-    - de_CH.UTF-8
+  with_items: "{{ regional_locales_installed }}"
+  when: ansible_distribution == "Debian"
+
+- set_fact:
+    locale_conf_path: /etc/default/locale
+  when: ansible_distribution == "Debian"
+
+- set_fact:
+    locale_conf_path: /etc/locale.conf
+  when: ansible_distribution == "Fedora"
 
 - name: install locale configuration
   copy:
     src: etc_default_locale
-    dest: /etc/default/locale
+    dest: "{{ locale_conf_path }}"
     owner: root
     group: root
     mode: 0644
