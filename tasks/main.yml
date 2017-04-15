@@ -23,8 +23,8 @@
   when: ansible_distribution == "Fedora"
 
 - name: install locale configuration
-  copy:
-    src: etc_default_locale
+  template:
+    src: etc_default_locale.j2
     dest: "{{ locale_conf_path }}"
     owner: root
     group: root
