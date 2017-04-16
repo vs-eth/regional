@@ -1,3 +1,9 @@
 regional_locales_installed:
   - en_US.UTF-8
   - de_CH.UTF-8
+
+# locale used for display language
+regional_locale_ui: en_US.UTF-8
+
+# locale used for country specific formats, like date, address, ...
+regional_locale_spec: de_CH.UTF-8
