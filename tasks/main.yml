@@ -1,5 +1,6 @@
 ---
 - name: install locales
+  become: True
   apt: 
     name: locales
     state: present 
@@ -8,6 +9,7 @@
   when: ansible_distribution == "Debian"
 
 - name: generate locales
+  become: True
   locale_gen:
     name: "{{ item }}"
     state: present
@@ -23,6 +25,7 @@
   when: ansible_distribution == "Fedora"
 
 - name: install locale configuration
+  become: True
   template:
     src: etc_default_locale.j2
     dest: "{{ locale_conf_path }}"
