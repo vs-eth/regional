@@ -6,7 +6,7 @@
     state: present 
     update_cache: yes 
     cache_valid_time: 1800
-  when: ansible_distribution == "Debian"
+  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
 
 - name: generate locales
   become: True
@@ -14,11 +14,11 @@
     name: "{{ item }}"
     state: present
   with_items: "{{ regional_locales_installed }}"
-  when: ansible_distribution == "Debian"
+  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
 
 - set_fact:
     locale_conf_path: /etc/default/locale
-  when: ansible_distribution == "Debian"
+  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
 
 - set_fact:
     locale_conf_path: /etc/locale.conf
