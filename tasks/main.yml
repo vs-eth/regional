@@ -1,36 +1,39 @@
 ---
-  - name: install locales
-    become: True
-    apt:
-      name: locales
-      state: present
-      update_cache: yes
-      cache_valid_time: 1800
-    when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
+- name: Install locales
+  become: true
+  ansible.builtin.apt:
+    name: locales
+    state: present
+    update_cache: true
+    cache_valid_time: 1800
+  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
 
-  - name: generate locales
-    become: True
-    locale_gen:
-      name: "{{ item }}"
-      state: present
-    with_items: "{{ regional_locales_installed }}"
-    when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
+- name: Generate locales
+  become: true
+  community.general.locale_gen:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ regional_locales_installed }}"
+  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
 
-  - set_fact:
-      locale_conf_path: /etc/default/locale
-    when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
+- name: Set facts for Debian/Ubuntu
+  ansible.builtin.set_fact:
+    locale_conf_path: /etc/default/locale
+  when: ansible_distribution == "Debian" or ansible_distribution == "Ubuntu"
 
-  - set_fact:
-      locale_conf_path: /etc/locale.conf
-    when: ansible_distribution == "Fedora"
+- name: Set facts for Fedora
+  ansible.builtin.set_fact:
+    locale_conf_path: /etc/locale.conf
+  when: ansible_distribution == "Fedora"
 
-  - name: install locale configuration
-    become: True
-    template:
-      src: etc_default_locale.j2
-      dest: "{{ locale_conf_path }}"
-      owner: root
-      group: root
-      mode: 0644
+- name: Install locale configuration
+  become: true
+  ansible.builtin.template:
+    src: etc_default_locale.j2
+    dest: "{{ locale_conf_path }}"
+    owner: root
+    group: root
+    mode: "0644"
 
-  - meta: flush_handlers
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
